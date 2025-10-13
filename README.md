@@ -63,20 +63,26 @@ cd goldmine-pro
 
 ### 2. Setup Environment Variables
 
-Create `.env` files in both the backend and frontend directories:
+Create `.env` files in both the backend and frontend directories based on the provided examples:
 
 **Backend** (`/backend/.env`):
 ```env
-SUPABASE_URL=https://bwnjoxsascwplrnqhtzj.supabase.co
-SUPABASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3bmpveHNhc2N3cGxybnFodHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNTMwMDUsImV4cCI6MjA3NTkyOTAwNX0.azGKWs1WyWEGXKpIl0xE7axsHMC659CGkafxgL9YItU
-JWT_SECRET=dVcoal0q5lCQ/p6U9kr2zgB+0y0dX2ywkoj3VF5DeWCmRzrKA6LQGc3gVrCuq5DX+Br8szkdasqT0qkmiNaQXw==
-FRONTEND_URL=http://localhost:3000
+SUPABASE_URL=YOUR_SUPABASE_URL
+SUPABASE_API_KEY=YOUR_SUPABASE_API_KEY
+JWT_SECRET=YOUR_JWT_SECRET
+FRONTEND_URL=YOUR_FRONTEND_URL
 ```
 
 **Frontend** (`/frontend/.env`):
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=YOUR_BACKEND_URL
 ```
+
+**Note**: The actual values are stored in `.env.example` files for reference. You need to create your own `.env` files with your actual values. The `.env` files are in `.gitignore` for security.
+
+Default values for development:
+- Use `http://localhost:3000` for `FRONTEND_URL` during development
+- Use `http://localhost:5000` for `VITE_API_URL` during development
 
 ### 3. Setup Database Schema
 
