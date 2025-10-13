@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: goldmine-pro-backend
+    env: docker
+    dockerfilePath: Dockerfile
+    repo: https://github.com/your-username/goldmine-pro
+    branch: main
+    envVars:
+      - key: SUPABASE_URL
+        value: https://bwnjoxsascwplrnqhtzj.supabase.co
+      - key: SUPABASE_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_VERSION
+        value: 18
