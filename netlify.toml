@@ -1,7 +1,7 @@
 [build]
   command = "cd frontend && npm install && npm run build"
   publish = "frontend/dist"
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "22" }
 
 [[redirects]]
   from = "/*"
