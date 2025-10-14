@@ -36,16 +36,25 @@ export const AuthProvider = ({ children }) => {
   // Check if user is authenticated on initial load
   useEffect(() => {
     const checkAuthStatus = async () => {
-      if (token) {
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile`);
+      try {
+        if (token) {
+          // Check if API URL is available
+          const apiUrl = import.meta.env.VITE_API_URL;
+          if (!apiUrl) {
+            console.error('VITE_API_URL is not defined');
+            setLoading(false);
+            return;
+          }
+          
+          const response = await axios.get(`${apiUrl}/api/auth/profile`);
           setUser(response.data.user);
-        } catch (error) {
-          console.error('Auth check failed:', error);
-          logout();
         }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        // Don't automatically log out on error, just proceed with loading
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     checkAuthStatus();
@@ -53,7 +62,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (mobile, password) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (!apiUrl) {
+        throw new Error('API URL is not configured');
+      }
+      
+      const response = await axios.post(`${apiUrl}/api/auth/login`, {
         mobile,
         password
       });
@@ -76,7 +90,12 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, mobile, password) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (!apiUrl) {
+        throw new Error('API URL is not configured');
+      }
+      
+      const response = await axios.post(`${apiUrl}/api/auth/register`, {
         name,
         mobile,
         password
