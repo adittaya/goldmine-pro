@@ -13,76 +13,79 @@ import Transactions from './pages/Transactions';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <Layout>
-          <div id="app-root">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/plans" 
-                element={
-                  <PrivateRoute>
-                    <Plans />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/recharge" 
-                element={
-                  <PrivateRoute>
-                    <Recharge />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/withdrawal" 
-                element={
-                  <PrivateRoute>
-                    <Withdrawal />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/transactions" 
-                element={
-                  <PrivateRoute>
-                    <Transactions />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/profile" 
-                element={
-                  <PrivateRoute>
-                    <Profile />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  <PrivateRoute>
-                    <Admin />
-                  </PrivateRoute>
-                } 
-              />
-            </Routes>
-          </div>
-        </Layout>
+        <ErrorBoundary>
+          <Layout>
+            <div id="app-root">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/plans" 
+                  element={
+                    <PrivateRoute>
+                      <Plans />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/recharge" 
+                  element={
+                    <PrivateRoute>
+                      <Recharge />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/withdrawal" 
+                  element={
+                    <PrivateRoute>
+                      <Withdrawal />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/transactions" 
+                  element={
+                    <PrivateRoute>
+                      <Transactions />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/profile" 
+                  element={
+                    <PrivateRoute>
+                      <Profile />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin" 
+                  element={
+                    <PrivateRoute>
+                      <Admin />
+                    </PrivateRoute>
+                  } 
+                />
+              </Routes>
+            </div>
+          </Layout>
+        </ErrorBoundary>
       </Router>
     </AuthProvider>
   );
