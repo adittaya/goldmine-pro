@@ -1,11 +1,29 @@
 import axios from 'axios';
 
 // Base API URL - you can change this to your deployed backend URL
-const API_BASE_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:5000/api';
+const getApiBaseUrl = () => {
+  // Check if running in a browser environment
+  if (typeof window !== 'undefined') {
+    // Try to get from environment variable
+    try {
+      const envUrl = import.meta.env.VITE_API_URL;
+      if (envUrl) {
+        // Ensure it doesn't already end with /api to avoid double-adding
+        const cleanUrl = envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+        return cleanUrl;
+      }
+    } catch (e) {
+      // If environment variable access fails, fallback to default
+      console.warn('Could not access VITE_API_URL environment variable:', e);
+    }
+  }
+  // Fallback to localhost in development
+  return 'http://localhost:5000/api';
+};
 
 // Create an axios instance
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
 });
 
 // Add a request interceptor to include the token in all requests
