@@ -40,18 +40,21 @@ export const AuthProvider = ({ children }) => {
         if (token) {
           // Check if API URL is available
           const apiUrl = import.meta.env.VITE_API_URL;
-          if (!apiUrl) {
-            console.error('VITE_API_URL is not defined');
+          if (!apiUrl || apiUrl.trim() === '') {
+            console.error('VITE_API_URL is not defined or empty');
             setLoading(false);
             return;
           }
           
           const response = await axios.get(`${apiUrl}/api/auth/profile`);
-          setUser(response.data.user);
+          if (response.data && response.data.user) {
+            setUser(response.data.user);
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
         // Don't automatically log out on error, just proceed with loading
+        // The error likely indicates the user is not logged in or backend is unreachable
       } finally {
         setLoading(false);
       }
@@ -135,7 +138,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!loading ? children : <div className="loading-screen">Loading Goldmine Pro...</div>}
     </AuthContext.Provider>
   );
 };
