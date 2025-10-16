@@ -20,9 +20,9 @@ console.log("App.jsx loaded successfully");
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <ErrorBoundary>
+    <Router>
+      <ErrorBoundary>
+        <AuthProvider>
           <Layout>
             <div id="app-root">
               <Routes>
@@ -88,9 +88,9 @@ function App() {
               </Routes>
             </div>
           </Layout>
-        </ErrorBoundary>
-      </Router>
-    </AuthProvider>
+        </AuthProvider>
+      </ErrorBoundary>
+    </Router>
   );
 }
 
