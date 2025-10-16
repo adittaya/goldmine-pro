@@ -15,6 +15,9 @@ import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
+// Add error logging
+console.log("App.jsx loaded successfully");
+
 function App() {
   return (
     <AuthProvider>

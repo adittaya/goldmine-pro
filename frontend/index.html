@@ -27,12 +27,46 @@
         font-size: 1.5rem;
         color: #4361ee;
       }
+      .error-screen {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 1.5rem;
+        color: #e63946;
+        text-align: center;
+        padding: 20px;
+      }
     </style>
   </head>
   <body>
     <div id="root">
       <div class="loading-screen">Loading Goldmine Pro...</div>
     </div>
+    <script>
+      // Global error handler to catch errors that might cause white screen
+      window.addEventListener('error', function(e) {
+        console.error('Global error caught:', e.error);
+        console.error('Error message:', e.message);
+        console.error('Error source:', e.filename, 'line:', e.lineno, 'col:', e.colno);
+        
+        // Display error on screen instead of white screen
+        const root = document.getElementById('root');
+        if (root) {
+          root.innerHTML = '<div class="error-screen"><h2>Application Error</h2><p>' + e.message + '</p><p>Check console for details</p></div>';
+        }
+      });
+      
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+        
+        // Display error on screen instead of white screen
+        const root = document.getElementById('root');
+        if (root) {
+          root.innerHTML = '<div class="error-screen"><h2>Unhandled Promise Error</h2><p>' + e.reason + '</p><p>Check console for details</p></div>';
+        }
+      });
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
