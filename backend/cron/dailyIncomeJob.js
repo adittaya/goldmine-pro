@@ -5,8 +5,8 @@ const { distributeDailyIncome } = require('../utils/dailyIncome');
 console.log('Starting daily income distribution job...');
 
 distributeDailyIncome()
-  .then(() => {
-    console.log('Daily income distribution completed successfully');
+  .then((result) => {
+    console.log('Daily income distribution completed successfully:', result);
     process.exit(0);
   })
   .catch((error) => {

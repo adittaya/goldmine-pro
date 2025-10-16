@@ -127,7 +127,7 @@ const Dashboard = () => {
               <div key={withdrawal.id} className="withdrawal-item">
                 <div className="withdrawal-info">
                   <p className="withdrawal-amount">₹{withdrawal.amount}</p>
-                  <p className="withdrawal-status status-{withdrawal.status}">{withdrawal.status}</p>
+                  <p className={`status-${withdrawal.status}`}>{withdrawal.status}</p>
                 </div>
                 <div className="withdrawal-date">
                   {new Date(withdrawal.created_at).toLocaleDateString()}
