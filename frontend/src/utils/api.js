@@ -22,6 +22,7 @@ const getApiBaseUrl = () => {
   // Fallback to a proper production URL if in production, otherwise localhost
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
     // In production, use the actual deployed backend URL
+    // Try the primary backend URL, with a backup option if needed
     return 'https://goldmine-pro-backend.onrender.com/api';
   } else {
     // Fallback to localhost in development

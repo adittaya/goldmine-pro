@@ -54,8 +54,23 @@ const Register = () => {
         });
       }
     } catch (err) {
-      setError(err.message || 'Registration failed');
-      errorLogger.logError(err, 'Register Function Error', { name, mobile });
+      // Provide more specific error messages for network issues
+      if (err.message.includes('Network Error')) {
+        setError('Unable to connect to the server. Please check your internet connection and try again later.');
+      } else if (err.response?.status === 409) {
+        setError('A user with this mobile number already exists.');
+      } else if (err.response?.status === 400) {
+        setError(err.response.data?.error || 'Invalid input data provided.');
+      } else {
+        setError(err.response?.data?.error || err.message || 'Registration failed');
+      }
+      
+      errorLogger.logError(err, 'Register Function Error', { 
+        name, 
+        mobile,
+        status: err.response?.status,
+        message: err.message
+      });
     } finally {
       setLoading(false);
     }

@@ -37,8 +37,20 @@ const Login = () => {
         });
       }
     } catch (err) {
-      setError(err.message || 'Login failed');
-      errorLogger.logError(err, 'Login Function Error', { mobile });
+      // Provide more specific error messages for network issues
+      if (err.message.includes('Network Error')) {
+        setError('Unable to connect to the server. Please check your internet connection and try again later.');
+      } else if (err.response?.status === 401) {
+        setError('Invalid credentials. Please check your mobile number and password.');
+      } else {
+        setError(err.response?.data?.error || err.message || 'Login failed');
+      }
+      
+      errorLogger.logError(err, 'Login Function Error', { 
+        mobile,
+        status: err.response?.status,
+        message: err.message
+      });
     } finally {
       setLoading(false);
     }
