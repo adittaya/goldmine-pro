@@ -7,7 +7,7 @@ const getApiBaseUrl = () => {
     // Try to get from environment variable
     try {
       const envUrl = import.meta.env.VITE_API_URL;
-      if (envUrl) {
+      if (envUrl && envUrl.trim() !== '') {
         // Ensure it doesn't already end with /api to avoid double-adding
         const cleanUrl = envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
         return cleanUrl;
@@ -17,8 +17,15 @@ const getApiBaseUrl = () => {
       console.warn('Could not access VITE_API_URL environment variable:', e);
     }
   }
-  // Fallback to localhost in development
-  return 'http://localhost:5000/api';
+  // Fallback to a proper production URL if in production, otherwise localhost
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
+    // In production, try to use the same domain as the frontend for the backend
+    // Or provide a default production backend URL
+    return 'https://your-backend-deployment-url.onrender.com/api'; // Replace with your actual backend URL
+  } else {
+    // Fallback to localhost in development
+    return 'http://localhost:5000/api';
+  }
 };
 
 // Create an axios instance
