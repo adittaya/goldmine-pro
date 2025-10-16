@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { errorLogger } from '../utils/errorLogger';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -15,28 +16,49 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-
     setLoading(true);
 
-    const result = await register(name, mobile, password);
-    
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      setError(result.message);
+    try {
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        errorLogger.logError('Passwords do not match', 'Register Form Validation');
+        setLoading(false);
+        return;
+      }
+
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters long');
+        errorLogger.logError('Password too short', 'Register Form Validation', { passwordLength: password.length });
+        setLoading(false);
+        return;
+      }
+
+      if (!/^\d{10}$/.test(mobile)) {
+        setError('Mobile number must be 10 digits');
+        errorLogger.logError('Invalid mobile number format', 'Register Form Validation', { mobile });
+        setLoading(false);
+        return;
+      }
+
+      const result = await register(name, mobile, password);
+      
+      if (result.success) {
+        console.log('Registration successful, navigating to dashboard');
+        navigate('/dashboard');
+      } else {
+        setError(result.message || 'Registration failed');
+        errorLogger.logError(result.message || 'Registration failed', 'Register API Call', { 
+          name, 
+          mobile,
+          success: result.success 
+        });
+      }
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+      errorLogger.logError(err, 'Register Function Error', { name, mobile });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (

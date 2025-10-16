@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { errorLogger } from '../utils/errorLogger';
 
 const Login = () => {
   const [mobile, setMobile] = useState('');
@@ -15,15 +16,32 @@ const Login = () => {
     setError('');
     setLoading(true);
 
-    const result = await login(mobile, password);
-    
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      setError(result.message);
+    try {
+      if (!mobile || !password) {
+        setError('Mobile and password are required');
+        errorLogger.logError('Login credentials missing', 'Login Form Validation', { hasMobile: !!mobile, hasPassword: !!password });
+        setLoading(false);
+        return;
+      }
+
+      const result = await login(mobile, password);
+      
+      if (result.success) {
+        console.log('Login successful, navigating to dashboard');
+        navigate('/dashboard');
+      } else {
+        setError(result.message || 'Login failed');
+        errorLogger.logError(result.message || 'Login failed', 'Login API Call', { 
+          mobile,
+          success: result.success 
+        });
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed');
+      errorLogger.logError(err, 'Login Function Error', { mobile });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (

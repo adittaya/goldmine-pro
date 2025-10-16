@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { errorLogger } from '../utils/errorLogger';
 
 const AuthContext = createContext();
 
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }) => {
           const apiUrl = import.meta.env.VITE_API_URL;
           if (!apiUrl || apiUrl.trim() === '') {
             console.error('VITE_API_URL is not defined or empty');
+            errorLogger.logError('VITE_API_URL is not defined or empty', 'AuthContext - Auth Check');
             setLoading(false);
             return;
           }
@@ -51,6 +53,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
+        errorLogger.logError(error, 'AuthContext - Auth Check', { tokenExists: !!token });
         // Don't automatically log out on error, just proceed with loading
         // The error likely indicates the user is not logged in or backend is unreachable
       } finally {
@@ -79,12 +82,14 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       localStorage.setItem('token', newToken);
       
+      console.log('Login successful');
       return { success: true, message: response.data.message };
     } catch (error) {
       console.error('Login error:', error);
+      errorLogger.logError(error, 'AuthContext - Login', { mobile });
       return { 
         success: false, 
-        message: error.response?.data?.error || 'Login failed' 
+        message: error.response?.data?.error || error.message || 'Login failed' 
       };
     }
   };
@@ -108,17 +113,20 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       localStorage.setItem('token', newToken);
       
+      console.log('Registration successful');
       return { success: true, message: response.data.message };
     } catch (error) {
       console.error('Registration error:', error);
+      errorLogger.logError(error, 'AuthContext - Register', { name, mobile });
       return { 
         success: false, 
-        message: error.response?.data?.error || 'Registration failed' 
+        message: error.response?.data?.error || error.message || 'Registration failed' 
       };
     }
   };
 
   const logout = () => {
+    console.log('Logging out');
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');

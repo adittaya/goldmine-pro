@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { errorLogger } from './errorLogger';
 
 // Base API URL - you can change this to your deployed backend URL
 const getApiBaseUrl = () => {
@@ -15,6 +16,7 @@ const getApiBaseUrl = () => {
     } catch (e) {
       // If environment variable access fails, fallback to default
       console.warn('Could not access VITE_API_URL environment variable:', e);
+      errorLogger.logError(e, 'API Base URL Config');
     }
   }
   // Fallback to a proper production URL if in production, otherwise localhost
@@ -42,53 +44,271 @@ api.interceptors.request.use(
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+        // Add debug header if in development
+        if (process.env.NODE_ENV !== 'production') {
+          config.headers['X-Debug-Info'] = 'true';
+        }
       }
     } catch (error) {
       // localStorage might not be available in some environments (SSR, etc.)
       console.warn('Could not access localStorage:', error);
+      errorLogger.logError(error, 'API Request Interceptor');
     }
     return config;
   },
   (error) => {
+    errorLogger.logError(error, 'API Request Error');
     return Promise.reject(error);
   }
 );
 
-// API functions
+// Add a response interceptor to catch and log API errors
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    const requestInfo = {
+      method: error.config?.method,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      headers: error.config?.headers,
+      timestamp: new Date().toISOString()
+    };
+    
+    errorLogger.logError(
+      error, 
+      'API Response Error', 
+      requestInfo
+    );
+    
+    // Log more details in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('API Error Details:', {
+        message: error.message,
+        config: error.config,
+        response: error.response,
+        requestInfo
+      });
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+// API functions with enhanced error logging
 export const authAPI = {
-  login: (mobile, password) => api.post('/auth/login', { mobile, password }),
-  register: (name, mobile, password) => api.post('/auth/register', { name, mobile, password }),
-  getProfile: () => api.get('/auth/profile'),
-  updateProfile: (name) => api.put('/auth/profile', { name }),
+  login: async (mobile, password) => {
+    try {
+      const response = await api.post('/auth/login', { mobile, password });
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Auth API - Login', { mobile });
+      throw error;
+    }
+  },
+  register: async (name, mobile, password) => {
+    try {
+      const response = await api.post('/auth/register', { name, mobile, password });
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Auth API - Register', { name, mobile });
+      throw error;
+    }
+  },
+  getProfile: async () => {
+    try {
+      const response = await api.get('/auth/profile');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Auth API - Get Profile');
+      throw error;
+    }
+  },
+  updateProfile: async (name) => {
+    try {
+      const response = await api.put('/auth/profile', { name });
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Auth API - Update Profile', { name });
+      throw error;
+    }
+  },
 };
 
 export const plansAPI = {
-  getPlans: () => api.get('/plans'),
-  getPlan: (planId) => api.get(`/plans/${planId}`),
-  purchasePlan: (planId) => api.post(`/plans/purchase/${planId}`),
+  getPlans: async () => {
+    try {
+      const response = await api.get('/plans');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Plans API - Get Plans');
+      throw error;
+    }
+  },
+  getPlan: async (planId) => {
+    try {
+      const response = await api.get(`/plans/${planId}`);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Plans API - Get Plan', { planId });
+      throw error;
+    }
+  },
+  purchasePlan: async (planId) => {
+    try {
+      const response = await api.post(`/plans/purchase/${planId}`);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Plans API - Purchase Plan', { planId });
+      throw error;
+    }
+  },
 };
 
 export const userAPI = {
-  getDashboard: () => api.get('/user/dashboard'),
-  getProfile: () => api.get('/user'),
-  updateProfile: (name) => api.put('/user', { name }),
-  getReferral: () => api.get('/user/referral'),
+  getDashboard: async () => {
+    try {
+      const response = await api.get('/user/dashboard');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'User API - Get Dashboard');
+      throw error;
+    }
+  },
+  getProfile: async () => {
+    try {
+      const response = await api.get('/user');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'User API - Get Profile');
+      throw error;
+    }
+  },
+  updateProfile: async (name) => {
+    try {
+      const response = await api.put('/user', { name });
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'User API - Update Profile', { name });
+      throw error;
+    }
+  },
+  getReferral: async () => {
+    try {
+      const response = await api.get('/user/referral');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'User API - Get Referral');
+      throw error;
+    }
+  },
 };
 
 export const transactionAPI = {
-  getUserTransactions: () => api.get('/transactions/user'),
-  createRecharge: (amount, utr, payment_method = 'upi') => 
-    api.post('/transactions/recharge', { amount, utr, payment_method }),
-  getUserRecharges: () => api.get('/transactions/recharge'),
-  createWithdrawal: (data) => api.post('/transactions/withdrawal', data),
-  getUserWithdrawals: () => api.get('/transactions/withdrawal'),
+  getUserTransactions: async () => {
+    try {
+      const response = await api.get('/transactions/user');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Get User Transactions');
+      throw error;
+    }
+  },
+  createRecharge: async (amount, utr, payment_method = 'upi') => {
+    try {
+      const response = await api.post('/transactions/recharge', { amount, utr, payment_method });
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Create Recharge', { amount, utr, payment_method });
+      throw error;
+    }
+  },
+  getUserRecharges: async () => {
+    try {
+      const response = await api.get('/transactions/recharge');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Get User Recharges');
+      throw error;
+    }
+  },
+  createWithdrawal: async (data) => {
+    try {
+      const response = await api.post('/transactions/withdrawal', data);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Create Withdrawal', { data });
+      throw error;
+    }
+  },
+  getUserWithdrawals: async () => {
+    try {
+      const response = await api.get('/transactions/withdrawal');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Get User Withdrawals');
+      throw error;
+    }
+  },
   // Admin endpoints
-  getAllRecharges: () => api.get('/transactions/admin/recharges'),
-  getAllWithdrawals: () => api.get('/transactions/admin/withdrawals'),
-  approveRecharge: (rechargeId) => api.patch(`/transactions/admin/recharges/${rechargeId}/approve`),
-  rejectRecharge: (rechargeId) => api.patch(`/transactions/admin/recharges/${rechargeId}/reject`),
-  approveWithdrawal: (withdrawalId) => api.patch(`/transactions/admin/withdrawals/${withdrawalId}/approve`),
-  rejectWithdrawal: (withdrawalId) => api.patch(`/transactions/admin/withdrawals/${withdrawalId}/reject`),
+  getAllRecharges: async () => {
+    try {
+      const response = await api.get('/transactions/admin/recharges');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Get All Recharges (Admin)');
+      throw error;
+    }
+  },
+  getAllWithdrawals: async () => {
+    try {
+      const response = await api.get('/transactions/admin/withdrawals');
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Get All Withdrawals (Admin)');
+      throw error;
+    }
+  },
+  approveRecharge: async (rechargeId) => {
+    try {
+      const response = await api.patch(`/transactions/admin/recharges/${rechargeId}/approve`);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Approve Recharge (Admin)', { rechargeId });
+      throw error;
+    }
+  },
+  rejectRecharge: async (rechargeId) => {
+    try {
+      const response = await api.patch(`/transactions/admin/recharges/${rechargeId}/reject`);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Reject Recharge (Admin)', { rechargeId });
+      throw error;
+    }
+  },
+  approveWithdrawal: async (withdrawalId) => {
+    try {
+      const response = await api.patch(`/transactions/admin/withdrawals/${withdrawalId}/approve`);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Approve Withdrawal (Admin)', { withdrawalId });
+      throw error;
+    }
+  },
+  rejectWithdrawal: async (withdrawalId) => {
+    try {
+      const response = await api.patch(`/transactions/admin/withdrawals/${withdrawalId}/reject`);
+      return response;
+    } catch (error) {
+      errorLogger.logError(error, 'Transaction API - Reject Withdrawal (Admin)', { withdrawalId });
+      throw error;
+    }
+  },
 };
 
 export default api;

@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import DebugPanel from './components/DebugPanel';
 
 // Add error logging
 console.log("App.jsx loaded successfully");
@@ -89,6 +90,7 @@ function App() {
             </div>
           </Layout>
         </AuthProvider>
+        <DebugPanel />
       </ErrorBoundary>
     </Router>
   );
