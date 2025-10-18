@@ -6,13 +6,57 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f7fb;
-  color: #212529;
+  background-color: #f1f5f9;
+  color: #1e293b;
   line-height: 1.6;
   min-width: 320px;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
 
 #root {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Improve form element styling for mobile */
+input, select, textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  border-radius: 12px;
+}
+
+/* Improve button styling for mobile */
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Mobile-specific scroll improvements */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better focus styles for accessibility */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #4361ee;
+  outline-offset: 2px;
+}
+
+/* For better touch interaction */
+@media (hover: hover) {
+  a:hover,
+  button:hover {
+    cursor: pointer;
+  }
 }

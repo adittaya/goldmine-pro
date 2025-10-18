@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { errorLogger } from '../utils/errorLogger';
+import { FaPhone, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -59,11 +61,13 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Login</h2>
+        <h2>Welcome Back</h2>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="mobile">Mobile Number</label>
+            <label htmlFor="mobile">
+              <FaPhone className="form-icon" /> Mobile Number
+            </label>
             <input
               type="tel"
               id="mobile"
@@ -71,21 +75,41 @@ const Login = () => {
               onChange={(e) => setMobile(e.target.value)}
               required
               placeholder="Enter your mobile number"
+              autoComplete="tel"
+              inputMode="numeric"
+              pattern="[0-9]{10}"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
+            <label htmlFor="password">
+              <FaLock className="form-icon" /> Password
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+          <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+            {loading ? (
+              <span className="loading-spinner">Logging in...</span>
+            ) : (
+              'Login'
+            )}
           </button>
         </form>
         <div className="auth-links">

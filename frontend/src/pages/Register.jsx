@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { errorLogger } from '../utils/errorLogger';
+import { FaUser, FaPhone, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -10,6 +11,8 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { register } = useAuth();
 
@@ -81,9 +84,11 @@ const Register = () => {
       <div className="auth-card">
         <h2>Register</h2>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="name">
+              <FaUser className="form-icon" /> Full Name
+            </label>
             <input
               type="text"
               id="name"
@@ -91,10 +96,13 @@ const Register = () => {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Enter your full name"
+              autoComplete="name"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="mobile">Mobile Number</label>
+            <label htmlFor="mobile">
+              <FaPhone className="form-icon" /> Mobile Number
+            </label>
             <input
               type="tel"
               id="mobile"
@@ -102,32 +110,65 @@ const Register = () => {
               onChange={(e) => setMobile(e.target.value)}
               required
               placeholder="Enter your mobile number"
+              autoComplete="tel"
+              inputMode="numeric"
+              pattern="[0-9]{10}"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
+            <label htmlFor="password">
+              <FaLock className="form-icon" /> Password
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="Confirm your password"
-            />
+            <label htmlFor="confirmPassword">
+              <FaLock className="form-icon" /> Confirm Password
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="Confirm your password"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
+          <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+            {loading ? (
+              <span className="loading-spinner">Registering...</span>
+            ) : (
+              'Register'
+            )}
           </button>
         </form>
         <div className="auth-links">

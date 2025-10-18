@@ -66,9 +66,10 @@ const Plans = () => {
               <p><strong>Daily Income:</strong> ₹{plan.daily_income}</p>
               <p><strong>Duration:</strong> {plan.duration_days} days</p>
               <p><strong>Total Return:</strong> ₹{plan.total_return}</p>
+              <p><strong>ROI:</strong> {((plan.total_return - plan.price) / plan.price * 100).toFixed(0)}%</p>
             </div>
             <button 
-              className="btn btn-primary" 
+              className={`btn ${user.balance < plan.price ? 'btn-secondary' : 'btn-primary'}`} 
               onClick={() => handlePlanSelect(plan)}
               disabled={user.balance < plan.price}
             >

@@ -105,11 +105,13 @@ const Dashboard = () => {
                   <p className="transaction-type">{transaction.type.replace('_', ' ')}</p>
                   <p className="transaction-description">{transaction.description}</p>
                 </div>
-                <div className="transaction-amount">
-                  {transaction.type === 'recharge' || transaction.type === 'daily_income' ? '+' : '-'}₹{transaction.amount}
-                </div>
-                <div className="transaction-date">
-                  {new Date(transaction.created_at).toLocaleDateString()}
+                <div className="transaction-details">
+                  <div className="transaction-amount">
+                    {transaction.type === 'recharge' || transaction.type === 'daily_income' ? '+' : '-'}₹{transaction.amount}
+                  </div>
+                  <div className="transaction-date">
+                    {new Date(transaction.created_at).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
             ))}
@@ -126,11 +128,11 @@ const Dashboard = () => {
             {dashboardData.withdrawals.slice(0, 3).map((withdrawal) => (
               <div key={withdrawal.id} className="withdrawal-item">
                 <div className="withdrawal-info">
-                  <p className="withdrawal-amount">₹{withdrawal.amount}</p>
+                  <div className="withdrawal-details">
+                    <p className="withdrawal-amount">₹{withdrawal.amount}</p>
+                    <p className="withdrawal-date">{new Date(withdrawal.created_at).toLocaleDateString()}</p>
+                  </div>
                   <p className={`status-${withdrawal.status}`}>{withdrawal.status}</p>
-                </div>
-                <div className="withdrawal-date">
-                  {new Date(withdrawal.created_at).toLocaleDateString()}
                 </div>
               </div>
             ))}
