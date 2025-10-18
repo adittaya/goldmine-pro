@@ -7,106 +7,247 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 const api = {
   // Authentication
   login: async (mobile, password) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ mobile, password }),
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile, password }),
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   register: async (name, mobile, password) => {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, mobile, password }),
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, mobile, password }),
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   // User endpoints
   getProfile: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/user`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   getDashboard: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/user/dashboard`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/dashboard`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   getReferral: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/user/referral`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/referral`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
       },
-    });
-    return response.json();
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   // Plans
   getPlans: async () => {
-    const response = await fetch(`${API_BASE_URL}/plans`);
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/plans`, {
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   purchasePlan: async (planId, token) => {
-    const response = await fetch(`${API_BASE_URL}/plans/purchase/${planId}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/plans/purchase/${planId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   // Transactions
   getTransactions: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/transactions/user`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/transactions/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   // Recharge
   createRecharge: async (amount, utr, token) => {
-    const response = await fetch(`${API_BASE_URL}/transactions/recharge`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ amount, utr }),
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/transactions/recharge`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount, utr }),
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 
   // Withdrawal
   createWithdrawal: async (data, token) => {
-    const response = await fetch(`${API_BASE_URL}/transactions/withdrawal`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/transactions/withdrawal`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        timeout: 10000, // 10 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      throw error;
+    }
   },
 };
 
@@ -126,6 +267,39 @@ const App = () => {
       setUser(JSON.parse(userData));
     }
   }, []);
+
+  // Cache for API responses
+  const apiCache = useRef(new Map());
+  
+  // Function to get cached data or fetch new data
+  const getCachedOrFetch = async (key, fetchFn, cacheTime = 300000) => { // 5 minutes default
+    const cached = apiCache.current.get(key);
+    
+    if (cached && Date.now() - cached.timestamp < cacheTime) {
+      return cached.data;
+    }
+    
+    const data = await fetchFn();
+    apiCache.current.set(key, {
+      data,
+      timestamp: Date.now()
+    });
+    
+    return data;
+  };
+
+  // Loading Spinner Component
+  const LoadingSpinner = ({ message = 'Loading...' }) => {
+    return React.createElement(
+      'div',
+      { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' } },
+      React.createElement('div', { 
+        className: 'loading-spinner-large',
+        style: { marginBottom: 'var(--spacing-md)' }
+      }),
+      React.createElement('div', { style: { fontSize: '1rem', color: 'var(--gray)' } }, message)
+    );
+  };
 
   const handleLogin = async (mobile, password) => {
     setLoading(true);
@@ -418,21 +592,25 @@ const RegisterPage = ({ onRegister, onBack, loading, error }) => {
 
 const DashboardPage = ({ user, authToken, onLogout, onNavigate }) => {
   const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Don't show loading initially
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const result = await api.getDashboard(authToken);
-        setDashboardData(result);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        console.error('Error fetching dashboard:', err);
-      }
-    };
-    fetchDashboardData();
-  }, [authToken]);
+    // Only fetch dashboard data when needed, not on every render
+    if (!dashboardData) {
+      const fetchDashboardData = async () => {
+        setLoading(true);
+        try {
+          const result = await api.getDashboard(authToken);
+          setDashboardData(result);
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
+          console.error('Error fetching dashboard:', err);
+        }
+      };
+      fetchDashboardData();
+    }
+  }, [authToken, dashboardData]);
 
   const copyReferralLink = async () => {
     try {
@@ -539,21 +717,25 @@ const DashboardPage = ({ user, authToken, onLogout, onNavigate }) => {
 
 const PlansPage = ({ user, authToken, onLogout, onNavigate }) => {
   const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Don't show loading initially
 
   useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const result = await api.getPlans();
-        setPlans(result.plans);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        console.error('Error fetching plans:', err);
-      }
-    };
-    fetchPlans();
-  }, []);
+    // Only fetch plans when the component mounts and plans are empty
+    if (plans.length === 0) {
+      const fetchPlans = async () => {
+        setLoading(true);
+        try {
+          const result = await api.getPlans();
+          setPlans(result.plans || []);
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
+          console.error('Error fetching plans:', err);
+        }
+      };
+      fetchPlans();
+    }
+  }, [plans.length]);
 
   const handleSubscribe = async (planId) => {
     try {
@@ -1022,21 +1204,25 @@ const WithdrawalPage = ({ user, authToken, onLogout, onNavigate }) => {
 
 const TransactionsPage = ({ user, authToken, onLogout, onNavigate }) => {
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Don't show loading initially
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const result = await api.getTransactions(authToken);
-        setTransactions(result);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        console.error('Error fetching transactions:', err);
-      }
-    };
-    fetchTransactions();
-  }, [authToken]);
+    // Only fetch transactions when the component mounts and transactions are empty
+    if (transactions.length === 0) {
+      const fetchTransactions = async () => {
+        setLoading(true);
+        try {
+          const result = await api.getTransactions(authToken);
+          setTransactions(result || []);
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
+          console.error('Error fetching transactions:', err);
+        }
+      };
+      fetchTransactions();
+    }
+  }, [authToken, transactions.length]);
 
   if (loading) {
     return React.createElement(
