@@ -7,6 +7,12 @@ import App from './App.jsx'
 const renderApp = () => {
   const rootElement = document.getElementById('root');
   if (rootElement) {
+    // Add font import dynamically
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    
     try {
       const root = createRoot(rootElement);
       root.render(

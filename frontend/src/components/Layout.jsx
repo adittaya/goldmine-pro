@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import { FaWallet, FaChartLine, FaShoppingCart, FaMoneyBillWave, FaHistory, FaUser, FaSignOutAlt, FaBars, FaTimes, FaRupeeSign } from 'react-icons/fa';
+import MobileNav from './MobileNav';
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -91,6 +92,9 @@ const Layout = ({ children }) => {
           {children}
         </div>
       </main>
+
+      {/* Mobile Navigation for small screens */}
+      <MobileNav />
 
       {/* Overlay for mobile */}
       {sidebarOpen && (
