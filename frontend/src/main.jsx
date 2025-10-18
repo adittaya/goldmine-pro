@@ -1,33 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
 
-// Function to handle errors during rendering
-const renderApp = () => {
-  const rootElement = document.getElementById('root');
-  if (rootElement) {
-    // Add font import dynamically
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-    
-    try {
-      const root = createRoot(rootElement);
-      root.render(
-        <StrictMode>
-          <App />
-        </StrictMode>
-      );
-    } catch (error) {
-      console.error('Error rendering app:', error);
-      rootElement.innerHTML = '<div style="padding: 20px; text-align: center; color: #f00;">Application failed to load. Please refresh the page or contact support.</div>';
-    }
-  } else {
-    console.error('Failed to find the root element');
-  }
-};
-
-// Render the app
-renderApp();
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
