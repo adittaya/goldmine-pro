@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './index.css';
 
 // API service for backend communication
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = 'https://goldmine-pro-backend.onrender.com/api';
 
 const timeoutFetch = (url, options = {}, timeout = 20000) => {  // Increased timeout to 20 seconds for deployed environments
   // Ensure credentials are included in all requests
