@@ -15,8 +15,28 @@ app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
+
+// Configure CORS to allow multiple origins
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000',
+  'https://goldmine-pro1.netlify.app',  // Original domain
+  'https://gold-mine-09.netlify.app',   // Your current domain
+  'http://localhost:3000',              // Local development
+  'http://localhost:5173'               // Vite default port
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin is in our allowed list
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
