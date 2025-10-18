@@ -1393,7 +1393,7 @@ const AdminPage = ({ authToken, onNavigate }) => {
       try {
         // This would be a new API endpoint for admin functionality
         // For now, we'll simulate with a direct call to a potential admin endpoint
-        const response = await fetch(`${API_BASE_URL}/admin/recharges/pending`, {
+        const response = await timeoutFetch(`${API_BASE_URL}/admin/recharges/pending`, {
           headers: {
             'Authorization': `Bearer ${authToken}`,
           },
@@ -1430,7 +1430,7 @@ const AdminPage = ({ authToken, onNavigate }) => {
     
     try {
       // This would be a new API endpoint for admin functionality
-      const response = await fetch(`${API_BASE_URL}/admin/recharges/${rechargeId}/approve`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/admin/recharges/${rechargeId}/approve`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${authToken}`,
@@ -1461,7 +1461,7 @@ const AdminPage = ({ authToken, onNavigate }) => {
     
     try {
       // This would be a new API endpoint for admin functionality
-      const response = await fetch(`${API_BASE_URL}/admin/recharges/${rechargeId}/reject`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/admin/recharges/${rechargeId}/reject`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${authToken}`,
