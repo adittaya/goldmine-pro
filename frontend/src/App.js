@@ -5,8 +5,13 @@ import './index.css';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const timeoutFetch = (url, options = {}, timeout = 10000) => {
+  // Ensure credentials are included in all requests
+  const fetchOptions = {
+    ...options,
+    credentials: 'include'  // Include credentials (cookies, etc.) in requests
+  };
   return Promise.race([
-    fetch(url, options),
+    fetch(url, fetchOptions),
     new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Request timeout. Please check your connection and try again.')), timeout)
     )
