@@ -1,167 +1,42 @@
 import styled, { css } from 'styled-components';
-
-// Define theme as constants to avoid import issues during build
-const theme = {
-  spacing: {
-    xs: '4px',
-    sm: '8px',
-    md: '16px',
-    lg: '24px',
-    xl: '32px',
-    '2xl': '48px',
-    '3xl': '64px',
-  },
-  borderRadius: {
-    xs: '4px',
-    sm: '8px',
-    md: '12px',
-    lg: '16px',
-    xl: '24px',
-    '2xl': '32px',
-    full: '9999px',
-  },
-  shadows: {
-    xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-  },
-  typography: {
-    fontSize: {
-      xs: '0.75rem', // 12px
-      sm: '0.875rem', // 14px
-      base: '1rem', // 16px
-      lg: '1.125rem', // 18px
-      xl: '1.25rem', // 20px
-      '2xl': '1.5rem', // 24px
-      '3xl': '1.875rem', // 30px
-      '4xl': '2.25rem', // 36px
-      '5xl': '3rem', // 48px
-    },
-    fontWeight: {
-      thin: '100',
-      light: '300',
-      normal: '400',
-      medium: '500',
-      semibold: '600',
-      bold: '700',
-      extrabold: '800',
-    },
-    lineHeight: {
-      none: '1',
-      tight: '1.25',
-      snug: '1.375',
-      normal: '1.5',
-      relaxed: '1.625',
-      loose: '2',
-    },
-  },
-  transitions: {
-    fast: '150ms ease-in-out',
-    normal: '250ms ease-in-out',
-    slow: '350ms ease-in-out',
-  },
-  colors: {
-    primary: {
-      50: '#f0f9ff',
-      100: '#e0f2fe',
-      200: '#bae6fd',
-      300: '#7dd3fc',
-      400: '#38bdf8',
-      500: '#0ea5e9',
-      600: '#0284c7',
-      700: '#0369a1',
-      800: '#075985',
-      900: '#0c4a6e',
-    },
-    secondary: {
-      50: '#f0fdfa',
-      100: '#ccfbf1',
-      200: '#99f6e4',
-      300: '#5eead4',
-      400: '#2dd4bf',
-      500: '#14b8a6',
-      600: '#0d9488',
-      700: '#0f766e',
-      800: '#115e59',
-      900: '#134e4a',
-    },
-    neutral: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
-    },
-    status: {
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      info: '#3b82f6',
-      primary: '#0ea5e9',
-    },
-    surface: {
-      primary: '#ffffff',
-      secondary: '#f8fafc',
-      tertiary: '#f1f5f9',
-    },
-    text: {
-      primary: '#0f172a',
-      secondary: '#64748b',
-      tertiary: '#94a3b8',
-      inverse: '#ffffff',
-    },
-  },
-  breakpoints: {
-    sm: '640px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px',
-  }
-};
+import { COLORS, SPACING, BORDERRADIUS, SHADOWS, TYPOGRAPHY, BREAKPOINTS, TRANSITIONS } from './theme';
 
 // Container Component
 export const Container = styled.div`
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 ${theme.spacing.md};
+  padding: 0 ${SPACING.md};
   
-  @media (min-width: ${theme.breakpoints.md}) {
+  @media (min-width: ${BREAKPOINTS.md}) {
     max-width: 768px;
-    padding: 0 ${theme.spacing.lg};
+    padding: 0 ${SPACING.lg};
   }
   
-  @media (min-width: ${theme.breakpoints.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     max-width: 1024px;
   }
 `;
 
 // Card Component
 export const Card = styled.div`
-  background: ${theme.colors.surface.primary};
-  border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.sm};
-  padding: ${theme.spacing.lg};
-  border: 1px solid ${theme.colors.neutral[200]};
-  transition: ${theme.transitions.normal};
+  background: ${COLORS.surface.primary};
+  border-radius: ${BORDERRADIUS.lg};
+  box-shadow: ${SHADOWS.sm};
+  padding: ${SPACING.lg};
+  border: 1px solid ${COLORS.neutral[200]};
+  transition: ${TRANSITIONS.normal};
   position: relative;
   overflow: hidden;
   
   ${props => props.elevated && css`
-    box-shadow: ${theme.shadows.lg};
+    box-shadow: ${SHADOWS.lg};
   `}
   
   ${props => props.interactive && css`
     cursor: pointer;
     &:hover {
-      box-shadow: ${theme.shadows.md};
+      box-shadow: ${SHADOWS.md};
       transform: translateY(-2px);
     }
     &:active {
@@ -171,8 +46,8 @@ export const Card = styled.div`
   
   ${props => props.premium && css`
     background: linear-gradient(135deg, 
-      ${theme.colors.surface.primary} 0%, 
-      ${theme.colors.neutral[50]} 100%);
+      ${COLORS.surface.primary} 0%, 
+      ${COLORS.neutral[50]} 100%);
     border: 1px solid rgba(14, 165, 233, 0.1);
     
     &::before {
@@ -183,8 +58,8 @@ export const Card = styled.div`
       right: 0;
       height: 2px;
       background: linear-gradient(90deg, 
-        ${theme.colors.primary[500]}, 
-        ${theme.colors.secondary[500]});
+        ${COLORS.primary[500]}, 
+        ${COLORS.secondary[500]});
       z-index: 1;
     }
   `}
@@ -195,17 +70,17 @@ export const Button = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: ${theme.spacing.xs};
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  font-weight: ${theme.typography.fontWeight.semibold};
-  font-size: ${theme.typography.fontSize.base};
-  line-height: ${theme.typography.lineHeight.tight};
+  gap: ${SPACING.xs};
+  padding: ${SPACING.sm} ${SPACING.md};
+  border-radius: ${BORDERRADIUS.md};
+  font-weight: ${TYPOGRAPHY.fontWeight.semibold};
+  font-size: ${TYPOGRAPHY.fontSize.base};
+  line-height: ${TYPOGRAPHY.lineHeight.tight};
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   border: none;
-  transition: ${theme.transitions.fast};
+  transition: ${TRANSITIONS.fast};
   min-height: 44px;
   min-width: 44px;
   user-select: none;
@@ -216,92 +91,92 @@ export const Button = styled.button`
   `}
   
   ${props => props.size === 'sm' && css`
-    padding: ${theme.spacing.xs} ${theme.spacing.sm};
-    font-size: ${theme.typography.fontSize.sm};
+    padding: ${SPACING.xs} ${SPACING.sm};
+    font-size: ${TYPOGRAPHY.fontSize.sm};
     min-height: 36px;
   `}
   
   ${props => props.size === 'lg' && css`
-    padding: ${theme.spacing.md} ${theme.spacing.lg};
-    font-size: ${theme.typography.fontSize.lg};
+    padding: ${SPACING.md} ${SPACING.lg};
+    font-size: ${TYPOGRAPHY.fontSize.lg};
     min-height: 52px;
   `}
   
   ${props => props.variant === 'primary' && css`
-    background-color: ${theme.colors.primary[600]};
-    color: ${theme.colors.text.inverse};
+    background-color: ${COLORS.primary[600]};
+    color: ${COLORS.text.inverse};
     &:hover {
-      background-color: ${theme.colors.primary[700]};
+      background-color: ${COLORS.primary[700]};
     }
     &:active {
-      background-color: ${theme.colors.primary[800]};
+      background-color: ${COLORS.primary[800]};
     }
     &:disabled {
-      background-color: ${theme.colors.neutral[300]};
+      background-color: ${COLORS.neutral[300]};
       cursor: not-allowed;
       opacity: 0.6;
     }
   `}
   
   ${props => props.variant === 'secondary' && css`
-    background-color: ${theme.colors.neutral[200]};
-    color: ${theme.colors.text.primary};
+    background-color: ${COLORS.neutral[200]};
+    color: ${COLORS.text.primary};
     &:hover {
-      background-color: ${theme.colors.neutral[300]};
+      background-color: ${COLORS.neutral[300]};
     }
     &:active {
-      background-color: ${theme.colors.neutral[400]};
+      background-color: ${COLORS.neutral[400]};
     }
     &:disabled {
-      background-color: ${theme.colors.neutral[100]};
+      background-color: ${COLORS.neutral[100]};
       cursor: not-allowed;
       opacity: 0.6;
     }
   `}
   
   ${props => props.variant === 'success' && css`
-    background-color: ${theme.colors.status.success};
-    color: ${theme.colors.text.inverse};
+    background-color: ${COLORS.status.success};
+    color: ${COLORS.text.inverse};
     &:hover {
       background-color: #0da271;
     }
     &:active {
-      background-color: ${theme.colors.success[700]};
+      background-color: ${COLORS.success[700]};
     }
     &:disabled {
-      background-color: ${theme.colors.success[200]};
+      background-color: ${COLORS.success[200]};
       cursor: not-allowed;
       opacity: 0.6;
     }
   `}
   
   ${props => props.variant === 'warning' && css`
-    background-color: ${theme.colors.status.warning};
-    color: ${theme.colors.text.primary};
+    background-color: ${COLORS.status.warning};
+    color: ${COLORS.text.primary};
     &:hover {
       background-color: #e69008;
     }
     &:active {
-      background-color: ${theme.colors.warning[700]};
+      background-color: ${COLORS.warning[700]};
     }
     &:disabled {
-      background-color: ${theme.colors.warning[200]};
+      background-color: ${COLORS.warning[200]};
       cursor: not-allowed;
       opacity: 0.6;
     }
   `}
   
   ${props => props.variant === 'danger' && css`
-    background-color: ${theme.colors.status.danger};
-    color: ${theme.colors.text.inverse};
+    background-color: ${COLORS.status.danger};
+    color: ${COLORS.text.inverse};
     &:hover {
       background-color: #dc2626;
     }
     &:active {
-      background-color: ${theme.colors.danger[700]};
+      background-color: ${COLORS.danger[700]};
     }
     &:disabled {
-      background-color: ${theme.colors.danger[200]};
+      background-color: ${COLORS.danger[200]};
       cursor: not-allowed;
       opacity: 0.6;
     }
@@ -311,9 +186,9 @@ export const Button = styled.button`
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, 
-      ${theme.colors.primary[600]}, 
-      ${theme.colors.secondary[600]});
-    color: ${theme.colors.text.inverse};
+      ${COLORS.primary[600]}, 
+      ${COLORS.secondary[600]});
+    color: ${COLORS.text.inverse};
     
     &::before {
       content: '';
@@ -484,7 +359,7 @@ export const Heading = styled.h1`
 // Grid Component
 export const Grid = styled.div`
   display: grid;
-  gap: 16px;
+  gap: ${SPACING.md};
   
   ${props => props.cols && css`
     grid-template-columns: repeat(${props.cols}, 1fr);
@@ -506,7 +381,7 @@ export const Grid = styled.div`
     grid-template-columns: repeat(4, 1fr);
   `}
   
-  @media (min-width: 768px) {
+  @media (min-width: ${BREAKPOINTS.md}) {
     ${props => props.colsMd && css`
       grid-template-columns: repeat(${props.colsMd}, 1fr);
     `}

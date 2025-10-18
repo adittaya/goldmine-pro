@@ -1,4 +1,4 @@
-// Premium Theme for Goldmine Pro
+// Premium Theme for Goldmine Pro - Build Compatible Version
 export const theme = {
   // Color Palette - Premium Modern Colors
   colors: {
@@ -161,3 +161,12 @@ export const getColor = (color, shade = 500) => {
   }
   return color;
 };
+
+// Export individual theme values as constants to avoid issues with object access during build
+export const COLORS = theme.colors;
+export const SPACING = theme.spacing;
+export const BORDERRADIUS = theme.borderRadius;
+export const SHADOWS = theme.shadows;
+export const TYPOGRAPHY = theme.typography;
+export const BREAKPOINTS = theme.breakpoints;
+export const TRANSITIONS = theme.transitions;
