@@ -1,9 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { theme } from './styles/theme';
 import { AuthProvider } from './contexts/AuthContext';
-import NewLayout from './components/NewLayout';
 import Home from './pages/NewHome';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -24,66 +22,48 @@ console.log("App.jsx loaded successfully with mobile-first design system");
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <Router>
         <ErrorBoundary>
           <AuthProvider>
             <div className="app-root">
               <Routes>
-                <Route path="/" element={
-                  <NewLayout>
-                    <Home />
-                  </NewLayout>
-                } />
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/dashboard" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Dashboard />
-                    </NewLayout>
+                    <Dashboard />
                   </PrivateRoute>
                 } />
                 <Route path="/plans" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Plans />
-                    </NewLayout>
+                    <Plans />
                   </PrivateRoute>
                 } />
                 <Route path="/recharge" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Recharge />
-                    </NewLayout>
+                    <Recharge />
                   </PrivateRoute>
                 } />
                 <Route path="/withdrawal" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Withdrawal />
-                    </NewLayout>
+                    <Withdrawal />
                   </PrivateRoute>
                 } />
                 <Route path="/transactions" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Transactions />
-                    </NewLayout>
+                    <Transactions />
                   </PrivateRoute>
                 } />
                 <Route path="/profile" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Profile />
-                    </NewLayout>
+                    <Profile />
                   </PrivateRoute>
                 } />
                 <Route path="/admin" element={
                   <PrivateRoute>
-                    <NewLayout>
-                      <Admin />
-                    </NewLayout>
+                    <Admin />
                   </PrivateRoute>
                 } />
               </Routes>
