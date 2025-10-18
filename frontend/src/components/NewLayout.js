@@ -18,11 +18,11 @@ const NewLayout = ({ children }) => {
      location.pathname.startsWith('/transactions') || 
      location.pathname.startsWith('/profile');
 
-  return (
-    <div>
-      {children}
-      {showBottomNav && <BottomNavigation />}
-    </div>
+  return React.createElement(
+    'div',
+    null,
+    children,
+    showBottomNav && React.createElement(BottomNavigation, null)
   );
 };
 
