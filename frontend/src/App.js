@@ -1,20 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './index.css';
 
 // API service for backend communication
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+const timeoutFetch = (url, options = {}, timeout = 10000) => {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout. Please check your connection and try again.')), timeout)
+    )
+  ]);
+};
+
 const api = {
   // Authentication
   login: async (mobile, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ mobile, password }),
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -24,7 +32,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -33,13 +41,12 @@ const api = {
 
   register: async (name, mobile, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name, mobile, password }),
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -49,7 +56,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -59,11 +66,10 @@ const api = {
   // User endpoints
   getProfile: async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/user`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -73,7 +79,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -82,11 +88,10 @@ const api = {
 
   getDashboard: async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/user/dashboard`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/user/dashboard`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -96,7 +101,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -105,11 +110,10 @@ const api = {
 
   getReferral: async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/user/referral`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/user/referral`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-      },
-        timeout: 10000, // 10 second timeout
+        },
       });
       
       if (!response.ok) {
@@ -119,7 +123,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -129,9 +133,7 @@ const api = {
   // Plans
   getPlans: async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/plans`, {
-        timeout: 10000, // 10 second timeout
-      });
+      const response = await timeoutFetch(`${API_BASE_URL}/plans`);
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -140,7 +142,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -149,13 +151,12 @@ const api = {
 
   purchasePlan: async (planId, token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/plans/purchase/${planId}`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/plans/purchase/${planId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -165,7 +166,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -175,11 +176,10 @@ const api = {
   // Transactions
   getTransactions: async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/transactions/user`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/transactions/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -189,7 +189,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -199,14 +199,13 @@ const api = {
   // Recharge
   createRecharge: async (amount, utr, token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/transactions/recharge`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/transactions/recharge`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ amount, utr }),
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -216,7 +215,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
@@ -226,14 +225,13 @@ const api = {
   // Withdrawal
   createWithdrawal: async (data, token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/transactions/withdrawal`, {
+      const response = await timeoutFetch(`${API_BASE_URL}/transactions/withdrawal`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-        timeout: 10000, // 10 second timeout
       });
       
       if (!response.ok) {
@@ -243,7 +241,7 @@ const api = {
       
       return await response.json();
     } catch (error) {
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      if (error.name === 'AbortError' || error.name === 'TimeoutError' || error.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection and try again.');
       }
       throw error;
