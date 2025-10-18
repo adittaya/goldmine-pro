@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
 import { 
   AppLayout, 
   MainContent, 
@@ -20,8 +19,8 @@ import {
 const HomePageContainer = styled(MainContent)`
   padding-top: 0;
   background: linear-gradient(135deg, 
-    ${theme.colors.primary[50]} 0%, 
-    ${theme.colors.secondary[50]} 100%);
+    #f0f9ff 0%, 
+    #f0fdfa 100%);
 `;
 
 const HeroSection = styled.div`

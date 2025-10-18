@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { userAPI } from '../utils/api';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
 import { 
   AppLayout, 
   MainContent, 
@@ -24,23 +23,23 @@ const DashboardContainer = styled(MainContent)`
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: ${theme.spacing.md};
-  margin-bottom: ${theme.spacing.lg};
+  gap: 16px;
+  margin-bottom: 24px;
   
-  @media (min-width: ${theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
 
 const Section = styled.div`
-  margin-bottom: ${theme.spacing.xl};
+  margin-bottom: 48px;
 `;
 
 const SectionTitle = styled(Text)`
-  font-size: ${theme.typography.fontSize.lg};
-  font-weight: ${theme.typography.fontWeight.semibold};
-  margin-bottom: ${theme.spacing.md};
-  color: ${theme.colors.text.primary};
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #0f172a;
 `;
 
 const Dashboard = () => {
