@@ -19,7 +19,7 @@ const NewLayout = ({ children }) => {
      location.pathname.startsWith('/profile');
 
   return React.createElement(
-    'div',
+    React.Fragment,
     null,
     children,
     showBottomNav && React.createElement(BottomNavigation, null)
