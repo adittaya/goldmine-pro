@@ -4,11 +4,15 @@ import './index.css';
 // API service for backend communication
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const timeoutFetch = (url, options = {}, timeout = 10000) => {
+const timeoutFetch = (url, options = {}, timeout = 15000) => {  // Increased timeout to 15 seconds for deployed environments
   // Ensure credentials are included in all requests
   const fetchOptions = {
     ...options,
-    credentials: 'include'  // Include credentials (cookies, etc.) in requests
+    credentials: 'include',  // Include credentials (cookies, etc.) in requests
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers  // Allow overriding default headers if needed
+    }
   };
   return Promise.race([
     fetch(url, fetchOptions),
