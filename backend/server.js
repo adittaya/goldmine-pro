@@ -18,10 +18,9 @@ app.use(helmet());
 
 // Configure CORS to allow multiple origins
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:3000',
+  process.env.FRONTEND_URL || 'http://localhost:3000',  // This comes from environment variable
   'https://goldmine-pro1.netlify.app',  // Original domain
   'https://gold-mine-09.netlify.app',   // Previous domain
-  'https://goldminepro.netlify.app',    // Current domain
   'http://localhost:3000',              // Local development
   'http://localhost:5173'               // Vite default port
 ];
