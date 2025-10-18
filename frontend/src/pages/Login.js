@@ -198,84 +198,88 @@ const Login = () => {
     }
   };
 
-  return (
-    <AppLayout>
-      <Header title="Login" showBack={true} showUser={false} />
-      <LoginPageContainer>
-        <LoginCard>
-          <Title>Welcome Back</Title>
+  return React.createElement(AppLayout, null,
+    React.createElement(Header, { title: "Login", showBack: true, showUser: false }),
+    React.createElement(LoginPageContainer, null,
+      React.createElement(LoginCard, null,
+        React.createElement(Title, null, "Welcome Back"),
+        
+        error && React.createElement('div', {
+          style: { 
+            backgroundColor: `${theme.colors.status.danger}20`,
+            color: theme.colors.status.danger,
+            padding: theme.spacing.md,
+            borderRadius: theme.borderRadius.md,
+            marginBottom: theme.spacing.md
+          }
+        }, 
+          React.createElement(Text, { size: "sm" }, error)
+        ),
+        
+        React.createElement('form', { onSubmit: handleSubmit },
+          React.createElement(FormGroup, null,
+            React.createElement(Label, { htmlFor: "mobile" }, "Mobile Number"),
+            React.createElement(Input, {
+              id: "mobile",
+              type: "tel",
+              value: mobile,
+              onChange: (e) => setMobile(e.target.value),
+              placeholder: "Enter your mobile number",
+              required: true
+            })
+          ),
           
-          {error && (
-            <div style={{ 
-              backgroundColor: `${theme.colors.status.danger}20`,
-              color: theme.colors.status.danger,
-              padding: theme.spacing.md,
-              borderRadius: theme.borderRadius.md,
-              marginBottom: theme.spacing.md
-            }}>
-              <Text size="sm">{error}</Text>
-            </div>
-          )}
+          React.createElement(FormGroup, null,
+            React.createElement(Label, { htmlFor: "password" }, "Password"),
+            React.createElement(Input, {
+              id: "password",
+              type: "password",
+              value: password,
+              onChange: (e) => setPassword(e.target.value),
+              placeholder: "Enter your password",
+              required: true
+            })
+          ),
           
-          <form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label htmlFor="mobile">Mobile Number</Label>
-              <Input
-                id="mobile"
-                type="tel"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                placeholder="Enter your mobile number"
-                required
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-            </FormGroup>
-            
-            <Button 
-              type="submit" 
-              variant="primary" 
-              fullWidth 
-              disabled={loading}
-              premium={true}
-              style={{ marginTop: theme.spacing.md }}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-          </form>
+          React.createElement(Button, { 
+            type: "submit", 
+            variant: "primary", 
+            fullWidth: true, 
+            disabled: loading,
+            premium: true,
+            style: { marginTop: theme.spacing.md }
+          }, 
+            loading ? 'Signing in...' : 'Sign In'
+          )
+        ),
+        
+        React.createElement(Flex, { 
+          direction: "column", 
+          align: "center", 
+          style: { marginTop: theme.spacing.lg } 
+        },
+          React.createElement(Text, { size: "sm", color: "secondary" },
+            "Don't have an account? ",
+            React.createElement('a', { 
+              href: "/register", 
+              style: { 
+                color: theme.colors.primary[600], 
+                textDecoration: 'none',
+                fontWeight: theme.typography.fontWeight.semibold
+              }
+            }, "Register here")
+          ),
           
-          <Flex direction="column" align="center" style={{ marginTop: theme.spacing.lg }}>
-            <Text size="sm" color="secondary">
-              Don't have an account?{' '}
-              <a 
-                href="/register" 
-                style={{ 
-                  color: theme.colors.primary[600], 
-                  textDecoration: 'none',
-                  fontWeight: theme.typography.fontWeight.semibold
-                }}
-              >
-                Register here
-              </a>
-            </Text>
-            
-            <Text size="sm" color="tertiary" style={{ marginTop: theme.spacing.sm }}>
-              By logging in, you agree to our Terms of Service and Privacy Policy.
-            </Text>
-          </Flex>
-        </LoginCard>
-      </LoginPageContainer>
-    </AppLayout>
+          React.createElement(Text, { 
+            size: "sm", 
+            color: "tertiary", 
+            style: { marginTop: theme.spacing.sm } 
+          },
+            "By logging in, you agree to our Terms of Service and Privacy Policy."
+          )
+        )
+      )
+    )
   );
 };
 
