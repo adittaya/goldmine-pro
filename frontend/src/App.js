@@ -497,11 +497,11 @@ const DashboardPage = ({ user, authToken, onLogout, onNavigate }) => {
       // Active Plans
       dashboardData?.activePlans && dashboardData.activePlans.length > 0 && React.createElement('div', { style: { marginBottom: 'var(--spacing-lg)' } },
         React.createElement('h3', { style: { marginBottom: 'var(--spacing-md)' } }, 'Active Plans'),
-        dashboardData.activePlans.map(plan => 
-          React.createElement('div', { key: plan.id, className: 'card', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+        (dashboardData.activePlans || []).map(plan => 
+          React.createElement('div', { key: plan?.id || Math.random(), className: 'card', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
             React.createElement('div', null,
-              React.createElement('div', { style: { fontWeight: 'bold' } }, plan.plan_name),
-              React.createElement('div', { style: { fontSize: '0.875rem', color: 'var(--gray)' } }, `Daily: ₹${plan.daily_income} | Ends: ${new Date(plan.end_date).toLocaleDateString()}`)
+              React.createElement('div', { style: { fontWeight: 'bold' } }, plan?.plan_name || 'Unknown Plan'),
+              React.createElement('div', { style: { fontSize: '0.875rem', color: 'var(--gray)' } }, `Daily: ₹${plan?.daily_income || '0'} | Ends: ${plan?.end_date ? new Date(plan.end_date).toLocaleDateString() : 'N/A'}`)
             ),
             React.createElement('span', { style: { color: 'var(--success)', fontWeight: 'bold' } }, 'Active')
           )
@@ -511,24 +511,24 @@ const DashboardPage = ({ user, authToken, onLogout, onNavigate }) => {
       // Recent Transactions
       dashboardData?.transactions && dashboardData.transactions.length > 0 && React.createElement('div', { className: 'card' },
         React.createElement('h3', { style: { marginBottom: 'var(--spacing-md)' } }, 'Recent Transactions'),
-        dashboardData.transactions.slice(0, 5).map(transaction => 
+        (dashboardData.transactions || []).slice(0, 5).map(transaction => 
           React.createElement('div', { 
-            key: transaction.id, 
+            key: transaction?.id || Math.random(), 
             style: { 
               display: 'flex', 
               justifyContent: 'space-between', 
               padding: 'var(--spacing-sm) 0', 
-              borderBottom: transaction.id !== dashboardData.transactions[4]?.id ? '1px solid var(--light-gray)' : 'none' 
+              borderBottom: '1px solid var(--light-gray)' 
             } 
           },
-            React.createElement('span', null, transaction.description),
+            React.createElement('span', null, transaction?.description || 'Transaction'),
             React.createElement('span', { 
               style: { 
                 fontWeight: 'bold',
-                color: ['daily_income', 'recharge'].includes(transaction.type) ? 'var(--success)' : 'var(--danger)' 
+                color: ['daily_income', 'recharge'].includes(transaction?.type) ? 'var(--success)' : 'var(--danger)' 
               } 
             }, 
-              ['daily_income', 'recharge'].includes(transaction.type) ? `+₹${transaction.amount}` : `-₹${transaction.amount}`
+              ['daily_income', 'recharge'].includes(transaction?.type) ? `+₹${transaction?.amount || 0}` : `-₹${transaction?.amount || 0}`
             )
           )
         )
@@ -587,36 +587,36 @@ const PlansPage = ({ user, authToken, onLogout, onNavigate }) => {
       React.createElement('h2', { style: { marginBottom: 'var(--spacing-lg)', textAlign: 'center' } }, 'Choose Your Plan'),
       
       React.createElement('div', { className: 'grid', style: { gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-md)' } },
-        plans.map(plan => 
-          React.createElement('div', { key: plan.id, className: 'card' },
-            React.createElement('h3', { style: { marginBottom: 'var(--spacing-sm)' } }, plan.name),
-            React.createElement('div', { style: { fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: 'var(--spacing-md)' } }, `₹${plan.price}`),
+        (plans || []).map(plan => 
+          React.createElement('div', { key: plan?.id || Math.random(), className: 'card' },
+            React.createElement('h3', { style: { marginBottom: 'var(--spacing-sm)' } }, plan?.name || 'Plan'),
+            React.createElement('div', { style: { fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: 'var(--spacing-md)' } }, `₹${plan?.price || '0'}`),
             
             React.createElement('div', { style: { marginBottom: 'var(--spacing-sm)' } },
               React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
                 React.createElement('span', null, 'Daily Income:'),
-                React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--success)' } }, `₹${plan.daily_income}`)
+                React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--success)' } }, `₹${plan?.daily_income || '0'}`)
               )
             ),
             
             React.createElement('div', { style: { marginBottom: 'var(--spacing-sm)' } },
               React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
                 React.createElement('span', null, 'Duration:'),
-                React.createElement('span', { style: { fontWeight: 'bold' } }, `${plan.duration_days} days`)
+                React.createElement('span', { style: { fontWeight: 'bold' } }, `${plan?.duration_days || '0'} days`)
               )
             ),
             
             React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
               React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
                 React.createElement('span', null, 'Total Return:'),
-                React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--secondary)' } }, `₹${plan.total_return}`)
+                React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--secondary)' } }, `₹${plan?.total_return || '0'}`)
               )
             ),
             
             React.createElement('button', {
               className: 'btn btn-primary',
               style: { width: '100%' },
-              onClick: () => handleSubscribe(plan.id)
+              onClick: () => plan?.id && handleSubscribe(plan.id)
             }, "Subscribe Now")
           )
         )
@@ -1057,25 +1057,25 @@ const TransactionsPage = ({ user, authToken, onLogout, onNavigate }) => {
     React.createElement('div', { className: 'container', style: { padding: 'var(--spacing-lg) 0' } },
       React.createElement('h2', { style: { marginBottom: 'var(--spacing-lg)' } }, `Transactions (${transactions.length})`),
       
-      transactions.length > 0 
+      (transactions || []).length > 0 
         ? React.createElement('div', null,
-            transactions.map(transaction => 
-              React.createElement('div', { key: transaction.id, className: 'card', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+            (transactions || []).map(transaction => 
+              React.createElement('div', { key: transaction?.id || Math.random(), className: 'card', style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                 React.createElement('div', null,
-                  React.createElement('div', { style: { fontWeight: 'bold' } }, transaction.description),
-                  React.createElement('div', { style: { fontSize: '0.875rem', color: 'var(--gray)' } }, new Date(transaction.created_at).toLocaleDateString())
+                  React.createElement('div', { style: { fontWeight: 'bold' } }, transaction?.description || 'Transaction'),
+                  React.createElement('div', { style: { fontSize: '0.875rem', color: 'var(--gray)' } }, transaction?.created_at ? new Date(transaction.created_at).toLocaleDateString() : 'N/A')
                 ),
                 React.createElement('div', { style: { textAlign: 'right' } },
                   React.createElement('div', { 
                     style: { 
                       fontWeight: 'bold',
                       fontSize: '1.1rem',
-                      color: ['daily_income', 'recharge'].includes(transaction.type) ? 'var(--success)' : 'var(--danger)' 
+                      color: ['daily_income', 'recharge'].includes(transaction?.type) ? 'var(--success)' : 'var(--danger)' 
                     } 
                   }, 
-                    ['daily_income', 'recharge'].includes(transaction.type) ? `+₹${transaction.amount}` : `-₹${transaction.amount}`
+                    ['daily_income', 'recharge'].includes(transaction?.type) ? `+₹${transaction?.amount || 0}` : `-₹${transaction?.amount || 0}`
                   ),
-                  React.createElement('div', { style: { fontSize: '0.75rem', color: 'var(--gray)' } }, transaction.type)
+                  React.createElement('div', { style: { fontSize: '0.75rem', color: 'var(--gray)' } }, transaction?.type || 'transaction')
                 )
               )
             )
