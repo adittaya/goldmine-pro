@@ -372,6 +372,8 @@ const App = () => {
         return React.createElement(WithdrawalPage, { user, authToken, onLogout: handleLogout, onNavigate: setCurrentPage });
       case '/transactions':
         return React.createElement(TransactionsPage, { user, authToken, onLogout: handleLogout, onNavigate: setCurrentPage });
+      case '/admin':
+        return React.createElement(AdminPage, { authToken, onNavigate: setCurrentPage });
       default:
         return React.createElement(DashboardPage, { user, authToken, onLogout: handleLogout, onNavigate: setCurrentPage });
     }
@@ -715,42 +717,52 @@ const DashboardPage = ({ user, authToken, onLogout, onNavigate }) => {
 
 const PlansPage = ({ user, authToken, onLogout, onNavigate }) => {
   const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(false); // Don't show loading initially
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Only fetch plans when the component mounts and plans are empty
-    if (plans.length === 0) {
-      const fetchPlans = async () => {
-        setLoading(true);
-        try {
-          const result = await api.getPlans();
-          setPlans(result.plans || []);
-          setLoading(false);
-        } catch (err) {
-          setLoading(false);
-          console.error('Error fetching plans:', err);
-        }
-      };
-      fetchPlans();
-    }
-  }, [plans.length]);
+    const fetchPlans = async () => {
+      setLoading(true);
+      try {
+        const result = await api.getPlans();
+        setPlans(result.plans || result || []);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        console.error('Error fetching plans:', err);
+        alert('Failed to load investment plans. Please try again later.');
+      }
+    };
+    fetchPlans();
+  }, []);
 
   const handleSubscribe = async (planId) => {
+    if (!planId) {
+      alert('Invalid plan selected');
+      return;
+    }
+    
+    if (!window.confirm('Are you sure you want to subscribe to this plan?')) {
+      return;
+    }
+    
     try {
+      setLoading(true);
       const result = await api.purchasePlan(planId, authToken);
+      setLoading(false);
       if (result.message) {
         alert(result.message);
-        // Refresh dashboard or show success
+        // Optionally navigate back to dashboard after successful purchase
+        onNavigate('/dashboard');
       }
     } catch (err) {
-      alert('Failed to purchase plan');
+      setLoading(false);
+      alert(err.message || 'Failed to purchase plan');
     }
   };
 
-  if (loading) {
+  if (loading && plans.length === 0) {
     return React.createElement(
-      'div',
-      { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' } },
+      'div', { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' } },
       React.createElement('div', { style: { fontSize: '1.5rem' } }, 'Loading Plans...')
     );
   }
@@ -766,41 +778,46 @@ const PlansPage = ({ user, authToken, onLogout, onNavigate }) => {
     React.createElement('div', { className: 'container', style: { padding: 'var(--spacing-lg) 0' } },
       React.createElement('h2', { style: { marginBottom: 'var(--spacing-lg)', textAlign: 'center' } }, 'Choose Your Plan'),
       
-      React.createElement('div', { className: 'grid', style: { gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-md)' } },
-        (plans || []).map(plan => 
-          React.createElement('div', { key: plan?.id || Math.random(), className: 'card' },
-            React.createElement('h3', { style: { marginBottom: 'var(--spacing-sm)' } }, plan?.name || 'Plan'),
-            React.createElement('div', { style: { fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: 'var(--spacing-md)' } }, `₹${plan?.price || '0'}`),
-            
-            React.createElement('div', { style: { marginBottom: 'var(--spacing-sm)' } },
-              React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
-                React.createElement('span', null, 'Daily Income:'),
-                React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--success)' } }, `₹${plan?.daily_income || '0'}`)
+      plans.length > 0 
+        ? React.createElement('div', { className: 'grid', style: { gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-md)' } },
+            plans.map(plan => 
+              React.createElement('div', { key: plan?.id || Math.random(), className: 'card' },
+                React.createElement('h3', { style: { marginBottom: 'var(--spacing-sm)' } }, plan?.name || 'Plan'),
+                React.createElement('div', { style: { fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: 'var(--spacing-md)' } }, `₹${plan?.price || '0'}`),
+                
+                React.createElement('div', { style: { marginBottom: 'var(--spacing-sm)' } },
+                  React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
+                    React.createElement('span', null, 'Daily Income:'),
+                    React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--success)' } }, `₹${plan?.daily_income || '0'}`)
+                  )
+                ),
+                
+                React.createElement('div', { style: { marginBottom: 'var(--spacing-sm)' } },
+                  React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
+                    React.createElement('span', null, 'Duration:'),
+                    React.createElement('span', { style: { fontWeight: 'bold' } }, `${plan?.duration_days || '0'} days`)
+                  )
+                ),
+                
+                React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
+                  React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
+                    React.createElement('span', null, 'Total Return:'),
+                    React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--secondary)' } }, `₹${plan?.total_return || '0'}`)
+                  )
+                ),
+                
+                React.createElement('button', {
+                  className: 'btn btn-primary',
+                  style: { width: '100%' },
+                  onClick: () => plan?.id && handleSubscribe(plan.id)
+                }, "Subscribe Now")
               )
-            ),
-            
-            React.createElement('div', { style: { marginBottom: 'var(--spacing-sm)' } },
-              React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
-                React.createElement('span', null, 'Duration:'),
-                React.createElement('span', { style: { fontWeight: 'bold' } }, `${plan?.duration_days || '0'} days`)
-              )
-            ),
-            
-            React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
-              React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between' } },
-                React.createElement('span', null, 'Total Return:'),
-                React.createElement('span', { style: { fontWeight: 'bold', color: 'var(--secondary)' } }, `₹${plan?.total_return || '0'}`)
-              )
-            ),
-            
-            React.createElement('button', {
-              className: 'btn btn-primary',
-              style: { width: '100%' },
-              onClick: () => plan?.id && handleSubscribe(plan.id)
-            }, "Subscribe Now")
+            )
           )
-        )
-      )
+        : React.createElement('div', { style: { textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--gray)' } },
+            React.createElement('p', null, 'No investment plans available at the moment.'),
+            React.createElement('p', null, 'Please check back later.')
+          )
     )
   );
 };
@@ -866,6 +883,9 @@ const RechargePage = ({ user, authToken, onLogout, onNavigate }) => {
   const [utr, setUtr] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Suggested plan amounts (buttons)
+  const planAmounts = [3000, 5000, 10000, 25000, 50000];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -880,6 +900,11 @@ const RechargePage = ({ user, authToken, onLogout, onNavigate }) => {
       alert('Failed to submit recharge request');
     }
     setLoading(false);
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    alert('UPI ID copied to clipboard!');
   };
 
   return React.createElement(
@@ -897,12 +922,29 @@ const RechargePage = ({ user, authToken, onLogout, onNavigate }) => {
         React.createElement('form', { onSubmit: handleSubmit },
           React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
             React.createElement('label', { htmlFor: 'amount', style: { display: 'block', marginBottom: 'var(--spacing-xs)', fontWeight: '600' } }, 'Amount (₹)'),
+            React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-xs)', marginBottom: 'var(--spacing-xs)' } },
+              ...planAmounts.map(amt => 
+                React.createElement('button', {
+                  key: amt,
+                  type: 'button',
+                  onClick: () => setAmount(amt.toString()),
+                  style: {
+                    padding: 'var(--spacing-xs) var(--spacing-sm)',
+                    borderRadius: 'var(--border-radius)',
+                    border: '1px solid var(--primary)',
+                    backgroundColor: 'white',
+                    color: 'var(--primary)',
+                    cursor: 'pointer'
+                  }
+                }, `₹${amt}`)
+              )
+            ),
             React.createElement('input', {
               id: 'amount',
               type: 'number',
               value: amount,
               onChange: (e) => setAmount(e.target.value),
-              placeholder: 'Enter amount',
+              placeholder: 'Enter custom amount',
               min: '100',
               required: true,
               style: { 
@@ -910,26 +952,8 @@ const RechargePage = ({ user, authToken, onLogout, onNavigate }) => {
                 padding: 'var(--spacing-sm)', 
                 border: '1px solid var(--light-gray)', 
                 borderRadius: 'var(--border-radius)',
-                fontSize: '1rem'
-              }
-            })
-          ),
-          
-          React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
-            React.createElement('label', { htmlFor: 'utr', style: { display: 'block', marginBottom: 'var(--spacing-xs)', fontWeight: '600' } }, 'UTR (Transaction Reference)'),
-            React.createElement('input', {
-              id: 'utr',
-              type: 'text',
-              value: utr,
-              onChange: (e) => setUtr(e.target.value),
-              placeholder: 'Enter UTR from bank',
-              required: true,
-              style: { 
-                width: '100%', 
-                padding: 'var(--spacing-sm)', 
-                border: '1px solid var(--light-gray)', 
-                borderRadius: 'var(--border-radius)',
-                fontSize: '1rem'
+                fontSize: '1rem',
+                marginTop: 'var(--spacing-sm)'
               }
             })
           ),
@@ -937,21 +961,100 @@ const RechargePage = ({ user, authToken, onLogout, onNavigate }) => {
           React.createElement('button', {
             type: 'submit',
             className: 'btn btn-primary',
-            style: { width: '100%' },
+            style: { width: '100%', marginBottom: 'var(--spacing-md)' },
             disabled: loading
           },
-            loading ? 'Processing...' : 'Submit Recharge'
+            loading ? 'Processing...' : 'Proceed to Payment'
           )
         )
       ),
 
+      // Payment Instructions Section
       React.createElement('div', { className: 'card' },
-        React.createElement('h3', { style: { marginBottom: 'var(--spacing-md)' } }, 'Instructions'),
-        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' } },
-          React.createElement('p', null, '1. Transfer money to: 7047571829@yespop (UPI ID)'),
-          React.createElement('p', null, '2. Get the UTR from your banking app'),
-          React.createElement('p', null, '3. Enter amount and UTR above'),
-          React.createElement('p', null, '4. Your account will be credited after verification')
+        React.createElement('h3', { style: { marginBottom: 'var(--spacing-md)' } }, 'Payment Instructions'),
+        
+        // TODO: Place your QR code image at /public/upi_qr.png
+        // UPI ID with copy button
+        React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
+          React.createElement('label', { style: { display: 'block', marginBottom: 'var(--spacing-xs)', fontWeight: '600' } }, 'UPI ID'),
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' } },
+            React.createElement('span', { 
+              style: { 
+                flex: 1, 
+                padding: 'var(--spacing-sm)', 
+                border: '1px solid var(--light-gray)', 
+                borderRadius: 'var(--border-radius)',
+                backgroundColor: '#f8fafc'
+              } 
+            }, '7047571829@yespop'),
+            React.createElement('button', {
+              type: 'button',
+              onClick: () => copyToClipboard('7047571829@yespop'),
+              className: 'btn btn-secondary',
+              style: { padding: 'var(--spacing-sm) var(--spacing-md)' }
+            }, 'Copy')
+          )
+        ),
+        
+        // QR Code
+        React.createElement('div', { style: { marginBottom: 'var(--spacing-md)', textAlign: 'center' } },
+          React.createElement('label', { style: { display: 'block', marginBottom: 'var(--spacing-xs)', fontWeight: '600' } }, 'QR Code'),
+          React.createElement('img', {
+            src: '/upi_qr.png',  // Replace this file in public/ directory with your QR code image
+            alt: 'UPI QR Code',
+            style: { 
+              maxWidth: '200px', 
+              height: 'auto',
+              border: '1px solid var(--light-gray)',
+              borderRadius: 'var(--border-radius)',
+              padding: 'var(--spacing-sm)'
+            }
+          })
+        ),
+        
+        // Amount to transfer
+        React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
+          React.createElement('label', { style: { display: 'block', marginBottom: 'var(--spacing-xs)', fontWeight: '600' } }, 'Amount to Transfer'),
+          React.createElement('div', { 
+            style: { 
+              padding: 'var(--spacing-sm)', 
+              border: '1px solid var(--light-gray)', 
+              borderRadius: 'var(--border-radius)',
+              backgroundColor: '#f8fafc',
+              fontSize: '1.2rem',
+              fontWeight: 'bold',
+              textAlign: 'center'
+            } 
+          }, amount ? `₹${amount}` : 'Enter amount above')
+        ),
+        
+        // UTR Input
+        React.createElement('div', { style: { marginBottom: 'var(--spacing-md)' } },
+          React.createElement('label', { htmlFor: 'utr', style: { display: 'block', marginBottom: 'var(--spacing-xs)', fontWeight: '600' } }, 'UTR (Transaction Reference)'),
+          React.createElement('input', {
+            id: 'utr',
+            type: 'text',
+            value: utr,
+            onChange: (e) => setUtr(e.target.value),
+            placeholder: 'Enter 12-digit UTR from bank',
+            required: true,
+            style: { 
+              width: '100%', 
+              padding: 'var(--spacing-sm)', 
+              border: '1px solid var(--light-gray)', 
+              borderRadius: 'var(--border-radius)',
+              fontSize: '1rem'
+            }
+          })
+        ),
+        
+        React.createElement('button', {
+          type: 'submit',
+          className: 'btn btn-primary',
+          style: { width: '100%' },
+          disabled: loading
+        },
+          loading ? 'Processing...' : 'Submit Recharge'
         )
       )
     )
@@ -1271,6 +1374,186 @@ const TransactionsPage = ({ user, authToken, onLogout, onNavigate }) => {
   );
 };
 
+const AdminPage = ({ authToken, onNavigate }) => {
+  const [recharges, setRecharges] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPendingRecharges = async () => {
+      setLoading(true);
+      try {
+        // This would be a new API endpoint for admin functionality
+        // For now, we'll simulate with a direct call to a potential admin endpoint
+        const response = await fetch(`${API_BASE_URL}/admin/recharges/pending`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setRecharges(data.recharges || data || []);
+        } else {
+          // Simulate with mock data for now
+          setRecharges([
+            { id: 1, user_id: 1, amount: 5000, utr: 'UTR1234567890', status: 'pending', created_at: '2023-01-01T00:00:00Z' },
+            { id: 2, user_id: 2, amount: 10000, utr: 'UTR0987654321', status: 'pending', created_at: '2023-01-02T00:00:00Z' }
+          ]);
+        }
+      } catch (err) {
+        console.error('Error fetching recharges:', err);
+        // Simulate with mock data
+        setRecharges([
+          { id: 1, user_id: 1, amount: 5000, utr: 'UTR1234567890', status: 'pending', created_at: '2023-01-01T00:00:00Z' },
+          { id: 2, user_id: 2, amount: 10000, utr: 'UTR0987654321', status: 'pending', created_at: '2023-01-02T00:00:00Z' }
+        ]);
+      }
+      setLoading(false);
+    };
+    
+    fetchPendingRecharges();
+  }, [authToken]);
+
+  const handleApprove = async (rechargeId) => {
+    if (!window.confirm('Are you sure you want to approve this recharge?')) {
+      return;
+    }
+    
+    try {
+      // This would be a new API endpoint for admin functionality
+      const response = await fetch(`${API_BASE_URL}/admin/recharges/${rechargeId}/approve`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        alert('Recharge approved successfully');
+        // Refresh the list
+        const updatedRecharges = recharges.map(recharge => 
+          recharge.id === rechargeId ? { ...recharge, status: 'approved' } : recharge
+        );
+        setRecharges(updatedRecharges);
+      } else {
+        alert('Failed to approve recharge');
+      }
+    } catch (err) {
+      console.error('Error approving recharge:', err);
+      alert('Failed to approve recharge');
+    }
+  };
+
+  const handleReject = async (rechargeId) => {
+    if (!window.confirm('Are you sure you want to reject this recharge?')) {
+      return;
+    }
+    
+    try {
+      // This would be a new API endpoint for admin functionality
+      const response = await fetch(`${API_BASE_URL}/admin/recharges/${rechargeId}/reject`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        alert('Recharge rejected successfully');
+        // Refresh the list
+        const updatedRecharges = recharges.map(recharge => 
+          recharge.id === rechargeId ? { ...recharge, status: 'rejected' } : recharge
+        );
+        setRecharges(updatedRecharges);
+      } else {
+        alert('Failed to reject recharge');
+      }
+    } catch (err) {
+      console.error('Error rejecting recharge:', err);
+      alert('Failed to reject recharge');
+    }
+  };
+
+  if (loading) {
+    return React.createElement(
+      'div', { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' } },
+      React.createElement('div', { style: { fontSize: '1.5rem' } }, 'Loading recharges...')
+    );
+  }
+
+  return React.createElement(
+    'div',
+    null,
+    React.createElement('div', { className: 'header' },
+      React.createElement('h1', { style: { color: 'white', margin: 0 } }, 'Admin Panel'),
+      React.createElement('button', { 
+        onClick: () => onNavigate('/dashboard'), 
+        className: 'btn btn-secondary', 
+        style: { color: 'white' } 
+      }, 'Back to Dashboard')
+    ),
+    
+    React.createElement('div', { className: 'container', style: { padding: 'var(--spacing-lg) 0' } },
+      React.createElement('h2', { style: { marginBottom: 'var(--spacing-lg)', textAlign: 'center' } }, 'Pending Recharges'),
+      
+      recharges.length > 0 
+        ? React.createElement('div', null,
+            recharges.map(recharge => 
+              React.createElement('div', { 
+                key: recharge.id, 
+                className: 'card',
+                style: { 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  gap: 'var(--spacing-sm)'
+                } 
+              },
+                React.createElement('div', { style: { width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                  React.createElement('div', null,
+                    React.createElement('div', { style: { fontWeight: 'bold' } }, `₹${recharge.amount}`),
+                    React.createElement('div', { style: { fontSize: '0.875rem', color: 'var(--gray)' } }, `UTR: ${recharge.utr}`),
+                    React.createElement('div', { style: { fontSize: '0.75rem', color: 'var(--gray)' } }, 
+                      `Date: ${new Date(recharge.created_at).toLocaleDateString()}`
+                    )
+                  ),
+                  React.createElement('span', { 
+                    style: { 
+                      fontWeight: 'bold',
+                      color: recharge.status === 'approved' ? 'var(--success)' : 
+                              recharge.status === 'rejected' ? 'var(--danger)' : 'var(--warning)'
+                    } 
+                  }, 
+                    recharge.status
+                  )
+                ),
+                React.createElement('div', { style: { width: '100%', display: 'flex', gap: 'var(--spacing-xs)' } },
+                  React.createElement('button', {
+                    className: 'btn btn-primary',
+                    style: { flex: 1 },
+                    onClick: () => handleApprove(recharge.id),
+                    disabled: recharge.status !== 'pending'
+                  }, "Approve"),
+                  React.createElement('button', {
+                    className: 'btn btn-secondary',
+                    style: { flex: 1 },
+                    onClick: () => handleReject(recharge.id),
+                    disabled: recharge.status !== 'pending'
+                  }, "Reject")
+                )
+              )
+            )
+          )
+        : React.createElement('div', { style: { textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--gray)' } },
+            React.createElement('p', null, 'No pending recharges at the moment.')
+          )
+    )
+  );
+};
+
 const BottomNavigation = ({ currentPage, onNavigate }) => {
   const navItems = [
     { path: '/dashboard', label: 'Home', icon: '🏠' },
@@ -1281,15 +1564,29 @@ const BottomNavigation = ({ currentPage, onNavigate }) => {
     { path: '/profile', label: 'Profile', icon: '👤' }
   ];
 
+  // Add admin option for debugging purposes
+  const allNavItems = [...navItems, { path: '/admin', label: 'Admin', icon: '⚙️' }];
+
   return React.createElement('div', { className: 'bottom-nav' },
-    navItems.map(item => 
+    allNavItems.map(item => 
       React.createElement('a', {
         key: item.path,
         href: '#',
         className: `nav-item ${currentPage === item.path ? 'active' : ''}`,
         onClick: (e) => {
           e.preventDefault();
-          onNavigate(item.path);
+          
+          // Special handling for admin panel
+          if (item.path === '/admin') {
+            // Check if this is the admin panel access
+            if (window.prompt('Enter admin access code:') === 'admin123') { // Simple admin access for demo
+              onNavigate(item.path);
+            } else {
+              alert('Invalid admin access code');
+            }
+          } else {
+            onNavigate(item.path);
+          }
         }
       },
         React.createElement('div', { style: { fontSize: '1.25rem', marginBottom: 'var(--spacing-xs)' } }, item.icon),
