@@ -1,0 +1,175 @@
+/*
+ * Mobile Performance Optimization Guide for Goldmine Pro
+ * 
+ * This file contains performance optimization techniques for mobile devices:
+ * 
+ * 1. Image Optimization
+ * 2. Code Splitting
+ * 3. Lazy Loading
+ * 4. Caching Strategies
+ * 5. Bundle Size Reduction
+ */
+
+/* CSS Performance Optimizations */
+/* Use hardware acceleration for animations */
+.premium-glow,
+.card-interactive {
+  will-change: transform;
+  transform: translateZ(0); /* Enable hardware acceleration */
+}
+
+/* Optimize for smooth scrolling */
+.main-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce repaints and reflows */
+.card,
+.btn {
+  contain: layout style paint;
+}
+
+/* Optimize animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Optimize for touch targets */
+.btn,
+.nav-item,
+.list-item {
+  min-height: 44px; /* Minimum touch target size */
+  min-width: 44px;
+}
+
+/* Optimize font loading */
+@font-face {
+  font-family: 'SystemFont';
+  src: local('.SFNSText-Light'), 
+       local('.SFNSText-Regular'),
+       local('Helvetica Neue'),
+       local('Segoe UI'),
+       local('Roboto');
+  font-display: swap; /* Optimize font loading */
+}
+
+/* Optimize grid rendering */
+.grid,
+.grid-cols-1,
+.grid-cols-2 {
+  display: grid;
+  will-change: transform;
+}
+
+/* Optimize for mobile network conditions */
+@media (max-width: 768px) {
+  /* Reduce animations on slower networks */
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* Optimize for mobile rendering */
+.card,
+.stat-card,
+.plan-card {
+  /* Reduce paint complexity */
+  background-clip: padding-box;
+  backface-visibility: hidden;
+}
+
+/* Optimize flex layouts for mobile */
+.flex,
+.inline-flex {
+  will-change: transform;
+}
+
+/* Optimize text rendering */
+.text-primary,
+.text-secondary,
+.text-tertiary {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Optimize for mobile memory usage */
+.modal,
+.modal-overlay {
+  display: none;
+  opacity: 0;
+}
+
+.modal.show,
+.modal-overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* Optimize for mobile battery usage */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Optimize transitions for mobile */
+* {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Reduce CSS complexity for mobile */
+@media (max-width: 768px) {
+  .card {
+    padding: 12px; /* Reduced padding for mobile */
+  }
+  
+  .main-content {
+    padding: 16px 12px;
+  }
+  
+  .stat-value {
+    font-size: 1.75rem; /* Slightly smaller for mobile */
+  }
+  
+  /* Simplify shadows for better performance */
+  .card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+}
+
+/* Optimize for mobile accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Performance optimizations for mobile touch */
+.nav-item,
+.btn,
+.list-item-interactive {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Optimize for mobile viewport */
+.app-layout {
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}

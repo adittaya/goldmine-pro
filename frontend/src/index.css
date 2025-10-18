@@ -1,42 +1,24 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Import the mobile-first design system */
+@import './styles/mobile-design-system.css';
+@import './styles/performance-optimization.css';
 
+/* Custom overrides for the new design system */
 body {
-  font-family: 'Inter', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0a0e2a, #0f172a);
-  color: #ffffff;
-  line-height: 1.6;
+  font-family: var(--font-family-primary);
+  background-color: var(--surface-tertiary);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
   min-width: 320px;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-/* Improve form element styling for mobile */
-input, select, textarea {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  border-radius: 12px;
-}
-
-/* Improve button styling for mobile */
-button {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
 }
 
 /* Mobile-specific scroll improvements */
@@ -49,7 +31,7 @@ button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid #00BFFF;
+  outline: 2px solid var(--brand-primary);
   outline-offset: 2px;
 }
 
@@ -59,4 +41,35 @@ textarea:focus {
   button:hover {
     cursor: pointer;
   }
+}
+
+/* Smooth animations for premium feel */
+* {
+  transition: all 0.2s ease;
+}
+
+/* Hide the old styles that conflict with our new design system */
+.auth-container, .auth-card, .sidebar, .main-content, .mobile-nav {
+  display: none !important;
+}
+
+/* Add a loading spinner for better UX */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+
+/* Optimize images if any are added later */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optimize for mobile touch targets */
+button, a {
+  touch-action: manipulation;
 }

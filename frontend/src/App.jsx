@@ -1,94 +1,111 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import Layout from './components/Layout';
-import Home from './pages/Home';
+import NewLayout from './components/NewLayout';
+import Home from './pages/NewHome';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Plans from './pages/Plans';
+import Dashboard from './pages/NewDashboard';
+import Plans from './pages/NewPlans';
 import Recharge from './pages/Recharge';
 import Withdrawal from './pages/Withdrawal';
 import Transactions from './pages/Transactions';
-import Profile from './pages/Profile';
+import Profile from './pages/NewProfile';
 import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import DebugPanel from './components/DebugPanel';
+import './styles/mobile-design-system.css';
 
 // Add error logging
-console.log("App.jsx loaded successfully");
+console.log("App.jsx loaded successfully with mobile-first design system");
 
 function App() {
   return (
     <Router>
       <ErrorBoundary>
         <AuthProvider>
-          <Layout>
-            <div id="app-root">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <PrivateRoute>
+          <div className="app-root">
+            <Routes>
+              <Route path="/" element={
+                <NewLayout>
+                  <Home />
+                </NewLayout>
+              } />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Dashboard />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/plans" 
-                  element={
-                    <PrivateRoute>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/plans" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Plans />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/recharge" 
-                  element={
-                    <PrivateRoute>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/recharge" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Recharge />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/withdrawal" 
-                  element={
-                    <PrivateRoute>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/withdrawal" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Withdrawal />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/transactions" 
-                  element={
-                    <PrivateRoute>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/transactions" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Transactions />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/profile" 
-                  element={
-                    <PrivateRoute>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Profile />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin" 
-                  element={
-                    <PrivateRoute>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/admin" 
+                element={
+                  <PrivateRoute>
+                    <NewLayout>
                       <Admin />
-                    </PrivateRoute>
-                  } 
-                />
-              </Routes>
-            </div>
-          </Layout>
+                    </NewLayout>
+                  </PrivateRoute>
+                } 
+              />
+            </Routes>
+          </div>
         </AuthProvider>
         <DebugPanel />
       </ErrorBoundary>
