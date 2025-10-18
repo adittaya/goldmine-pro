@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
 import { AuthProvider } from './contexts/AuthContext';
 import NewLayout from './components/NewLayout';
 import Home from './pages/NewHome';
@@ -22,94 +24,75 @@ console.log("App.jsx loaded successfully with mobile-first design system");
 
 function App() {
   return (
-    <Router>
-      <ErrorBoundary>
-        <AuthProvider>
-          <div className="app-root">
-            <Routes>
-              <Route path="/" element={
-                <NewLayout>
-                  <Home />
-                </NewLayout>
-              } />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route 
-                path="/dashboard" 
-                element={
+    <ThemeProvider theme={theme}>
+      <Router>
+        <ErrorBoundary>
+          <AuthProvider>
+            <div className="app-root">
+              <Routes>
+                <Route path="/" element={
+                  <NewLayout>
+                    <Home />
+                  </NewLayout>
+                } />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/dashboard" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Dashboard />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/plans" 
-                element={
+                } />
+                <Route path="/plans" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Plans />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/recharge" 
-                element={
+                } />
+                <Route path="/recharge" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Recharge />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/withdrawal" 
-                element={
+                } />
+                <Route path="/withdrawal" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Withdrawal />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/transactions" 
-                element={
+                } />
+                <Route path="/transactions" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Transactions />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/profile" 
-                element={
+                } />
+                <Route path="/profile" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Profile />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
+                } />
+                <Route path="/admin" element={
                   <PrivateRoute>
                     <NewLayout>
                       <Admin />
                     </NewLayout>
                   </PrivateRoute>
-                } 
-              />
-            </Routes>
-          </div>
-        </AuthProvider>
-        <DebugPanel />
-      </ErrorBoundary>
-    </Router>
+                } />
+              </Routes>
+            </div>
+          </AuthProvider>
+          <DebugPanel />
+        </ErrorBoundary>
+      </Router>
+    </ThemeProvider>
   );
 }
 
